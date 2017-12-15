@@ -1,0 +1,15 @@
+|ID|Type|"Name"/id,number/id,number/
+"Information about building"
+/id,number/id,number/
+
+|301||"House"/101,50/102,10/
+Small house
+/201,50/
+
+|302|Military|"Barrack"/101,50/102,10/
+The simplest building for training units
+/201,50/
+
+|303|Manufacturing|"Sawmill"/102,100/
+A small sawmill where a group of people will cut down the wood and pave him
+/101,50/
