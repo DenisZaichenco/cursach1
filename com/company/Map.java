@@ -47,7 +47,7 @@ public class Map extends JFrame {
 
         System.out.println("this: " + this.getWidth() + " " + this.getHeight());
         //System.out.println("panel: " + panel.getWidth() + " " + panel.getHeight());
-
+        this.pack();
         this.setVisible(true);
     }
 

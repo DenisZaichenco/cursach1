@@ -101,12 +101,12 @@ public class Fort {
         }
         return -1;
     }
-
-    public int maxIncomMilitaryResourse(int id,String address_of_military_resource) throws IOException{
+    //------Возвращает количество раз которое можно призвести тот или иной предмет военного принадназначения----//
+    public int maxIncomeMilitaryResource(int id_military_resource,String address_of_military_resource) throws IOException{
         int max = Integer.MAX_VALUE;
         int number;
         File_processing.file_date.setAddress(address_of_military_resource);
-        Element.elements = File_processing.file_date.getCost(id);
+        Element.elements = File_processing.file_date.getCost(id_military_resource);
         for (int i = 0; i <Element.elements.size() ; i++) {
             if ((number = containIdResourceBase(Element.elements.get(i).getID()))==-1)
                 return 0;
@@ -114,9 +114,9 @@ public class Fort {
                 max = number;
             }
         }
-        /*if (containIdResourceBase(ID)==-1)
-            resourceBases.add(new ResourceBase(ID,0,0,0));*/
-
         return max;
+    }
+    public void build(){
+
     }
 }
