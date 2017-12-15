@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class Fort {
+    private static final String MILITARY_BUILDING = "Military";
+    private static final String STORE_BUILDING = "Store";
+    private static final String MANUFACTURE_BUILDING = "Manufacturing";
     private ArrayList<ResourceBase> resourceBases;
     private ArrayList<Element> buildings;
     private ArrayList<Manufacture> manufactures;
@@ -17,15 +20,14 @@ public class Fort {
     }
 
     public void addResourceBase(ResourceBase resource) {
-        for (ResourceBase resourceBase : resourceBases) {
-            if (resourceBase.getID() == resource.getID()) {
-                resourceBase.addNumber(resource.getNumber());
-                resourceBase.addStore(resource.getStore());
-                resourceBase.addIncome(resource.getIncome());
-                return;
-            }
+        int number;
+        if ((number = containIdResourceBase(resource.getID()))==-1)
+            resourceBases.add(resource);//resourceBases.trimToSize();
+        else{
+            resourceBases.get(number).addNumber(resource.getNumber());
+            resourceBases.get(number).addStore(resource.getStore());
+            resourceBases.get(number).addIncome(resource.getIncome());
         }
-        resourceBases.add(resource);//resourceBases.trimToSize();
     }
     public void addBuilding(Element building) {
         int number;
@@ -114,9 +116,34 @@ public class Fort {
                 max = number;
             }
         }
-        return max;
+        number = containIdResourceBase(id_military_resource);
+        if (max+resourceBases.get(number).getNumber()>resourceBases.get(number).getStore())
+            return resourceBases.get(number).getStore()-resourceBases.get(number).getNumber();
+        else
+            return max;
     }
-    public void build(){
-
+    public void build(Element id_and_number_of_building,String address_of_file_with_information_of_income) throws IOException {
+        File_processing.file_date.setAddress(address_of_file_with_information_of_income);
+        ArrayList<Element> building_resource = File_processing.file_date.getSpecificResources(id_and_number_of_building.getID());
+        String type_of_building = File_processing.file_date.getType(id_and_number_of_building.getID());
+        switch (type_of_building){
+            case MILITARY_BUILDING:
+                for (Element recruitLimit : building_resource) {
+                   addRecruit_Limit(new Element(recruitLimit.getID(),recruitLimit.getNumber()*id_and_number_of_building.getNumber()));
+                }
+                break;
+            case STORE_BUILDING:
+                for (Element aBuilding_resource : building_resource) {
+                    addResourceBase(new ResourceBase(aBuilding_resource.getID(), 0, aBuilding_resource.getNumber()*id_and_number_of_building.getNumber(), 0));
+                }
+                break;
+            case MANUFACTURE_BUILDING:
+                for (Element manufacture: building_resource) {
+                    addResourceBase(new ResourceBase(manufacture.getID(), 0,0, manufacture.getNumber()*id_and_number_of_building.getNumber()));
+                }
+                break;
+            default:
+                BagDialogWindow.dontFoundType(type_of_building);
+        }
     }
 }

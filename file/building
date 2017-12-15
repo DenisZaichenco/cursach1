@@ -2,9 +2,9 @@
 "Information about building"
 /id,number/id,number/
 
-|301||"House"/101,50/102,10/
+|301|Store|"House"/101,50/102,10/
 Small house
-/201,50/
+/200,50/
 
 |302|Military|"Barrack"/101,50/102,10/
 The simplest building for training units
