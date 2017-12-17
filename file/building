@@ -2,14 +2,14 @@
 "Information about building"
 /id,number/id,number/
 
-|301|Store|"House"/101,50/102,10/
+|301|Store|"House"/101,50/102,10/200,20/
 Small house
 /200,50/
 
-|302|Military|"Barrack"/101,50/102,10/
+|302|Military|"Barrack"/101,50/102,10/200,20/
 The simplest building for training units
 /201,50/
 
-|303|Manufacturing|"Sawmill"/102,100/
+|303|Manufacturing|"Sawmill"/102,100/200,20/
 A small sawmill where a group of people will cut down the wood and pave him
 /101,50/

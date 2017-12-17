@@ -8,7 +8,7 @@ public class File_processing {
     public static File_processing file_date = new File_processing();
     public static final String building_file = "src\\file\\building";
     public static final String type_from_relief = "src\\file\\Type from relief";
-    public static final String recruit_file = "src\\file\\recruite";
+    public static final String recruit_file = "src\\file\\recruit";
     public static final String resource = "src\\file\\resource";
     public static final String RESOURCE_MILITARY = "src\\file\\resource_military";
 
@@ -21,8 +21,8 @@ public class File_processing {
     private String address;
 
     private static int checkOnlyNumbers(String check_word) {
-        final Pattern ONLY_NUMBERS = Pattern.compile("^[0-9]+$");//Matcher check_bar;
-        if ((/*check_bar = */ONLY_NUMBERS.matcher(check_word)).matches())
+        final Pattern ONLY_NUMBERS = Pattern.compile("^[0-9]+$");
+        if ((ONLY_NUMBERS.matcher(check_word)).matches())
             return Integer.parseInt(check_word);
         else
             return -1;
@@ -47,14 +47,12 @@ public class File_processing {
         int id, number;
         ArrayList<Element> resources = new ArrayList<>();
         while (cost_defragmentation.length() != 1) {
-            //System.out.println(cost_defragmentation);
             if ((id = checkOnlyNumbers(cost_defragmentation.substring(1, cost_defragmentation.indexOf(",")))) == -1 |
                     (number = checkOnlyNumbers(cost_defragmentation.substring(cost_defragmentation.indexOf(",") + 1, cost_defragmentation.indexOf("/", 1)))) == -1) {
                 BagDialogWindow.fileReadError("");//ошибка при чтении даных
                 return null;
             }
             cost_defragmentation.delete(0, cost_defragmentation.indexOf("/", 1));//удаляет кусок с используимыми даными
-           // System.out.println(cost_defragmentation);
             resources.add(new Element(id, number));
         }
         return resources;
@@ -76,7 +74,6 @@ public class File_processing {
         return manufactures;
     }
     public ArrayList<ResourceBase> getSetResourceBase(StringBuilder cost_defragmentation) {
-        // System.out.println(cost_defragmentation);
         int id, number, store, income;
         int second_comma, third_comma;
         ArrayList<ResourceBase> manufactures = new ArrayList<>();
@@ -96,7 +93,6 @@ public class File_processing {
     public ArrayList<Element> getCost(int ID) throws IOException {
         itemSearch(ID);// повертає ціну будівлі
         cost_defragmentation = new StringBuilder(line.substring(line.indexOf("/"), (line.lastIndexOf("/") + 1)));
-        //System.out.println(cost_defragmentation);
         return getSetElement(cost_defragmentation);
     }
     public String getInformation(int ID) throws IOException {
@@ -114,7 +110,7 @@ public class File_processing {
         return getSetElement(cost_defragmentation.append(readCost.readLine()));
     }
     public int getRowFromUnit(int ID) throws IOException {
-        int number;
+        /*int number;
         itemSearch(ID);
         readCost.readLine();
         line = readCost.readLine();
@@ -123,7 +119,8 @@ public class File_processing {
         else {
             BagDialogWindow.fileReadError("");//System.out.println();// ошибка при чтении даних
             return -1;
-        }
+    }*/
+        return getSpecificResources(ID).get(0).getID();
     }
     public Unite getInformationAboutUnite(int ID) throws IOException {
         int comma, min_damage, max_damage, attack, defense, initiative, health;
@@ -145,6 +142,13 @@ public class File_processing {
     public String getName(int ID) throws IOException {
         itemSearch(ID);
         return line.substring(line.indexOf("\"") + 1, line.lastIndexOf("\""));
+    }
+    public int getMaxWorkPlace(int Id) throws IOException {
+        Element.elements = getCost(Id);
+        return Element.elements.get(Element.containID(Element.ID_PEOPLE,Element.elements)).getNumber();
+    }
+    public int getTimeFromRecrut(int id) throws IOException {
+        return getSpecificResources(id).get(0).getNumber();
     }
 
     public Map loadGame(String address) throws IOException {
@@ -278,8 +282,7 @@ public class File_processing {
     }
     private void itemSearch(int ID) throws IOException  {//доводе файл до лінії з потрібним id будівлі/найманця
         setFileReader(address);
-        while (((line = readCost.readLine()) != null) && (!line.contains("|" + ID))) {
-        }
+        while (((line = readCost.readLine()) != null) && (!line.contains("|" + ID))) { }
     }
     private void setFileReader(String address)  {
         try {

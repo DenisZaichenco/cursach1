@@ -47,15 +47,14 @@ public class Fort {
             recruit_limit.add(limit);
     }
 
-    public boolean removeResourceBase(ResourceBase resource) {
-        for (ResourceBase resourceBase : resourceBases) {
-            if (resourceBase.getID() == resource.getID()) {
-                return resourceBase.removeNumber(resource.getNumber()) &&
-                        resourceBase.removeStore(resource.getStore()) &&
-                        resourceBase.removeIncome(resource.getIncome());
-            }
+    public void removeResourceBase(ResourceBase resource) {
+        int index = containIdResourceBase(resource.getID());
+        if(index != -1 && resourceBases.get(index).canRemoveNumber(resource.getNumber())
+                && resourceBases.get(index).canRemoveStore(resource.getStore()) && resourceBases.get(index).canRemoveIncome(resource.getIncome())) {
+            resourceBases.get(index).removeNumber(resource.getNumber());
+            resourceBases.get(index).removeIncome(resource.getIncome());
+            resourceBases.get(index).removeStore(resource.getStore());
         }
-        return true;
     }
     public boolean removeBuilding(Element building) {
         int number;
@@ -64,7 +63,7 @@ public class Fort {
     public boolean removeManufactures(Manufacture manufacture) {
         return manufactures.remove(manufacture);// manufactures.trimToSize();
     }
-    public boolean removeRecruite_Limit(Element limit) {
+    public boolean removeRecruit_Limit(Element limit) {
         int number;
         return (number = Element.containID(limit.getID(), recruit_limit)) != -1 && recruit_limit.get(number).removeNumber(limit.getNumber());
     }
@@ -104,23 +103,38 @@ public class Fort {
         return -1;
     }
     //------Возвращает количество раз которое можно призвести тот или иной предмет военного принадназначения----//
-    public int maxIncomeMilitaryResource(int id_military_resource,String address_of_military_resource) throws IOException{
-        int max = Integer.MAX_VALUE;
-        int number;
-        File_processing.file_date.setAddress(address_of_military_resource);
-        Element.elements = File_processing.file_date.getCost(id_military_resource);
-        for (int i = 0; i <Element.elements.size() ; i++) {
-            if ((number = containIdResourceBase(Element.elements.get(i).getID()))==-1)
-                return 0;
-            else if ((number = resourceBases.get(number).getNumber()/Element.elements.get(i).getNumber())<max){
-                max = number;
-            }
+    // -1 не существует хранилища ресурсов даного вида ресурсов
+    public int getMaxIncomeResource(int id_resource, String address_of_information_about_resource) throws IOException {
+        if ((containIdResourceBase(id_resource)) == -1) {
+            return -1;
         }
-        number = containIdResourceBase(id_military_resource);
-        if (max+resourceBases.get(number).getNumber()>resourceBases.get(number).getStore())
-            return resourceBases.get(number).getStore()-resourceBases.get(number).getNumber();
-        else
-            return max;
+        else {
+            int index;
+            int max = Integer.MAX_VALUE;
+            File_processing.file_date.setAddress(address_of_information_about_resource);
+            ArrayList<Element> elements = File_processing.file_date.getCost(id_resource);
+            int number;
+            for (Element element : elements) {
+                if ((index = containIdResourceBase(element.getID())) == -1)
+                    return 0;
+                else if ((number = resourceBases.get(index).getNumber() / element.getNumber()) < max) {
+                    max = number;
+                }
+            }
+            index = containIdResourceBase(id_resource);
+            if (max + resourceBases.get(index).getNumber() > resourceBases.get(index).getStore())
+                return (resourceBases.get(index).getStore() - resourceBases.get(index).getNumber())/File_processing.file_date.getSpecificResources(id_resource).get(0).getNumber();
+            else
+                return max/File_processing.file_date.getSpecificResources(id_resource).get(0).getNumber();
+        }
+    }
+    //------ работает коректно только в паре с getMaxIncomeResource ------//
+    public void payFromCreateResource(int id_of_resource, int number_of_create_element, String address_with_cost_resource) throws IOException {
+        File_processing.file_date.setAddress(address_with_cost_resource);
+        ArrayList<Element> cost = File_processing.file_date.getCost(id_of_resource);
+        for (Element element: cost) {
+            removeResourceBase(new ResourceBase(element.getID(),element.getNumber()*number_of_create_element,0,0));
+        }
     }
     public void build(Element id_and_number_of_building,String address_of_file_with_information_of_income) throws IOException {
         File_processing.file_date.setAddress(address_of_file_with_information_of_income);
@@ -144,6 +158,22 @@ public class Fort {
                 break;
             default:
                 BagDialogWindow.dontFoundType(type_of_building);
+        }
+    }
+    public void recruit(Element unit_information, String address_information_about_type_unit) throws IOException {
+        File_processing.file_date.setAddress(address_information_about_type_unit);
+        removeRecruit_Limit(new Element(Integer.parseInt(File_processing.file_date.getType(unit_information.getID())),unit_information.getNumber()));
+        addManufactures(new Manufacture(unit_information.getID(),unit_information.getNumber(),File_processing.file_date.getTimeFromRecrut(unit_information.getID())));
+        addManufactures(new Manufacture(Integer.parseInt(File_processing.file_date.getType(unit_information.getID())),unit_information.getNumber(),File_processing.file_date.getTimeFromRecrut(unit_information.getID())));
+    }
+    public void clearManufacture(){
+        int size = manufactures.size();
+        int index = 0;
+        for (int i = index; i <size ; i++) {
+            if (manufactures.get(i).getTime_to_end_production()==0){
+                manufactures.remove(manufactures.get(i));
+                size--;
+            }
         }
     }
 }

@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class Building_Recruit_Panel extends JDialog {
-    public static final String BUILDING = "Building";
+    public static final String BUILDING = "com.company.Building";
     public static final String RECRUIT = "Recruit";
     public static int id_of_need_element;
 

@@ -6,11 +6,14 @@ public class Element {
     private int ID;
     private int number;
     public static ArrayList<Element> elements = new ArrayList<>();
-    public static final int[] ID_BUILDING_RESOURCE = new int[]{101,102,103,104};
+    public static final int[] ID_BUILDING_SIMPLE_RESOURCE = new int[]{101,102};
+    public static final int[] ID_BUILDING_PROGRESS_RESOURSE = new int[]{103};
     public static final int[] ID_RECRUIT_RESOURCE = new int[]{201,202,203,204,205,206,207,208,209,210,211,212};
+    public static final int[] ID_TYPE_MILITARY = new int[]{251,252,253,254};
     public static final int[] ID_BUILDING = new int[]{301,302,303};
     public static final int[] ID_RECRUIT = new int[]{401,402,403,404,405,406,407};
     public static final int ID_TIME = 105;
+    public static final int ID_PEOPLE = 200;
 
     public Element(int ID, int number){
         this.ID = ID;
@@ -41,7 +44,9 @@ public class Element {
     public void setNumber(int number) {
         this.number = number;
     }
-
+    public boolean canRemoveNumber(int number){
+        return this.number - number >= 0;
+    }
     @Override
     public String toString() {
         return ID+","+number;
@@ -70,9 +75,6 @@ public class Element {
     }
     static Resource Tool(int number) {
         return new Resource(103, number);
-    }
-    static Resource Builder(int number){
-        return new Resource(104,number);
     }
     static Resource Time(int number){
         return new Resource(105,number);
@@ -122,15 +124,15 @@ public class Element {
     }
 
     static Resource Foot(int number){//пехота
-        return new Resource(214,number);
+        return new Resource(251,number);
     }
     static Resource Cavalry(int number){
-        return new Resource(215,number);
+        return new Resource(252,number);
     }
     static Resource Thrower(int number){
-        return new Resource(216,number);
+        return new Resource(253,number);
     }
     static Resource Mechanical(int number){
-        return new Resource(217,number);
+        return new Resource(254,number);
     }
  */

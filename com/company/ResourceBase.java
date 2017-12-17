@@ -16,13 +16,11 @@ public class ResourceBase extends Element {
     public void addStore(int number) {
         this.store += number;
     }
-    public boolean removeStore(int number) {
-        if ((this.store - number) < 0)
-            return false;
-        else {
-            this.store -= number;
-            return true;
-        }
+    public boolean canRemoveStore(int number) {
+        return this.store - number >= 0;
+    }
+    public void removeStore(int store){
+        this.store -= store;
     }
 
     public int getIncome() {
@@ -31,15 +29,12 @@ public class ResourceBase extends Element {
     public void addIncome(int number) {
         this.income += number;
     }
-    public boolean removeIncome(int number) {
-        if ((this.income - number) < 0)
-            return false;
-        else {
-            this.income -= number;
-            return true;
-        }
+    public boolean canRemoveIncome(int number) {
+        return this.income - number >= 0;
     }
-
+    public void removeIncome(int income){
+        this.income -= income;
+    }
     @Override
     public String toString() {
         return super.toString() + "," + store + "," + income;
